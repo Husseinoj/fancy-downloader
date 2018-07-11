@@ -1,5 +1,5 @@
 import { NativeModules } from 'react-native';
-const { RNReactNativeFancyDownloader } = NativeModules;
+const { RNFancyDownloader } = NativeModules;
 //starting from here
 import React from 'react';
 import { View, Text, Modal } from 'react-native';
