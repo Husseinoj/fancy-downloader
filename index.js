@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 const { RNReactNativeFancyDownloader } = NativeModules;
 //starting from here
 import React from 'react';
-import { View, Modal } from 'react-native';
+import { View, Text, Modal } from 'react-native';
 import RNFetchBlob from 'react-native-fetch-blob'
 import * as Progress from 'react-native-progress';
 import Styles from './src/style';
@@ -63,15 +63,16 @@ export default class Downloader extends React.Component {
                             onRequestClose={() => {
                                 console.log('Modal has been closed.');
                             }}
-
                         >
                             <View style={Styles.overlay}></View>
 
                         </Modal>
-                        <Progress.Circle
-                            size={80}
+                        <Text style={Styles.titleStyle}>{this.props.text}</Text>
+                        <Progress.Bar
+                            borderRadius={20}
+                            width={200}
+                            height={13}
                             showText={true}
-                            thickness={5}
                             indeterminate={false}
                             progress={this.state.dlProgress} />
                     </View>
