@@ -1,20 +1,25 @@
+import { NativeModules } from 'react-native';
+const { RNReactNativeFancyDownloader } = NativeModules;
+//starting from here
 import React from 'react';
-import RNFetchBlob from 'react-native-fetch-blob';
+import { View, Modal } from 'react-native';
+import RNFetchBlob from 'react-native-fetch-blob'
+import * as Progress from 'react-native-progress';
 import Styles from './src/style';
 export default class Downloader extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            error: ''
-        }
+        this.state = { dlProgress: 0, modalVisible: true, error: '' }
         this.downloadFile = this.downloadFile.bind(this);
     }
     downloadFile(filePath) {
+        let self = this;
         let downloadTask = null;
         file_name = RNFetchBlob.fs.dirs.CacheDir + '/com.example.app.apk';
         RNFetchBlob.fs.exists(file_name)
             .then((exist) => {
                 if (exist) {
+                    this.setState({ modalVisible: false })
                     RNFancyDownloader.installApp(file_name);
                 }
                 else {
@@ -23,11 +28,12 @@ export default class Downloader extends React.Component {
                     })
                         .fetch('GET', filePath, {});
                     downloadTask.progress({ interval: 2000 }, (received, total) => {
-                        console.log(parseFloat(received) / parseFloat(total));
+                        this.setState({ dlProgress: parseFloat(received) / parseFloat(total) });
                     })
                         .then((resp) => {
                             RNFetchBlob.fs.mv(resp.path(), file_name)
                                 .then(() => {
+                                    self.setState({ modalVisible: false })
                                     RNFancyDownloader.installApp(file_name);
                                 })
                                 .catch((err) => {
@@ -43,4 +49,43 @@ export default class Downloader extends React.Component {
                 this.setState({ error: err });
             });
     }
+
+    render() {
+        if (this.props.hasOwnProperty('path') && this.props.hasOwnProperty('downloadApp')) {
+            if (this.state.modalVisible) {
+                return (
+                    <View style={Styles.container}>
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={this.state.modalVisible}
+                            onShow={() => this.downloadFile(this.props.path)}
+                            onRequestClose={() => {
+                                console.log('Modal has been closed.');
+                            }}
+
+                        >
+                            <View style={Styles.overlay}></View>
+
+                        </Modal>
+                        <Progress.Circle
+                            size={80}
+                            showText={true}
+                            thickness={5}
+                            indeterminate={false}
+                            progress={this.state.dlProgress} />
+                    </View>
+
+                );
+            } else {
+                return (<View></View>)
+            }
+        } else {
+            return <View></View>
+        }
+    }
 }
+
+
+
+
