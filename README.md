@@ -1,7 +1,7 @@
 
 # react-native-fancy-downloader
 ## Demo
-![](https://github.com/Husseinoj/Husseinoj/fancy-downloader/master/demo.gif)
+![](https://github.com/Husseinoj/fancy-downloader/master/demo.gif)
 
 ## Getting started
 
